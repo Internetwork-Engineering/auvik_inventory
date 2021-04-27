@@ -1,0 +1,94 @@
+---
+show_progress: true
+log_level: debug # Possible values: debug, info, warning, error
+log_to_console: false
+log_to_device: true
+usernames:
+  # Processed in order until one works
+  - user1
+  - user2
+  - user3
+passwords:
+  - pass1
+  - pass2
+  - pass3
+snmp_creds:
+  # Processed in order until one works
+  - public
+  - private
+  - cisco
+auvik_api:
+  # Auvik API secrets
+  # This is the default URL but can be modified to another region.
+  AUVIK_API_URL: https://auvikapi.us1.my.auvik.com/v1
+  AUVIK_API_USER: you@yourcompany.com
+  AUVIK_API_KEY: YOUR_AUVIK_API_KEY
+  AUVIK_API_DOMAIN: your_api_domain
+  # See README.md for details on getting the cert.
+  AUVIK_API_SSL_CERT: chain_us1_my_auvik_com.crt
+filters:
+  # This is where you specify the devices you want to act on.
+  # The match is *not* case sensitive
+  # [TODO]: Add to command line arguments.
+  domains:
+    - domain1
+    - domain2
+  device_filters:
+    # Current available device filters with description:
+    # "ip" - IP address
+    # "name" - Full device name as in Auvik
+    # "nd_type" - Netmiko device type (cisco_ios, cisco_asa, etc)
+    # "device_type" - Auvik device type (switch, router, firewall, etc)
+    # "make" - Auvik make and model
+    # "vendor" - Auvik vendor name
+    # "serial" - Auvik serial number
+    # "os" - OS as determined by SNMP sysdescr parser lib
+    # "model" - Model as determined by SNMP sysdescr parser lib
+    # "version" - Version as determined by SNMP sysdescr parser lib
+    # "firmware" - Auvik firmware version
+    # "software" - Auvik software version
+    # "status" - Auvik online status
+    # "last_seen" - Auvik last seen
+    # "last_modified" - Auvik last modified
+    - vendor: Cisco
+    - os: IOS
+# Optional global device type specification. Applies to all steps.
+device_types:
+  - cisco_ios
+  - cisco_xe
+# Here is where you specify the sequence of commands ran on each device.
+steps:
+  # The name is used for results and output files. No spaces!
+  - name: Check_ACL_88
+    # Command to run for this step.
+    # If not specified, will use "show run | i {exists}".
+    cmd: sh access-list 88
+    # Check exists is in the output of {cmd}.
+    # If no cmd is specified "show run | i {exists}".
+    exists: 10.14.0.79
+    # Command or list of commands to run if results are negative.
+    # Please do not specify config mode or config write commands.
+    change: access-list 88 permit host 10.14.0.79
+    # Optional list of device types for this step.
+    # Will use global if not specified.
+    device_types:
+      - cisco_ios
+  # The name is used for results and output files. No spaces!
+  - name: Check_SNMP_ACL
+    # Command to run for this step.
+    # If not specified, will use "show run | i {exists}".
+    cmd: sh access-list SNMP_ACL
+    # Check exists is in the output of {cmd}.
+    # If no cmd is specified "show run | i {exists}".
+    exists: 10.14.0.79
+    # Command or list of commands to run if results are negative.
+    # Please do not specify config mode or config write commands.
+    change:
+      - ip access-list standard SNMP_ACL
+      - permit host 10.14.0.79
+    # Optional list of device types for this step.
+    # Will use global if not specified.
+    device_types:
+      - cisco_ios
+      - cisco_xe
+

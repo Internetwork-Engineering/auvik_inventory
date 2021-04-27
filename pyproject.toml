@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "auvik_inventory"
+version = "0.1.0"
+description = ""
+authors = ["Ricky Laney <rlaneyjr@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.25.1"
+urllib3 = "^1.26.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pycodestyle = "^2.7.0"
+black = "^21.4b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
